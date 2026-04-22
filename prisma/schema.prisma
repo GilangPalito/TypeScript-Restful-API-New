@@ -1,0 +1,58 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+// generator client {
+//   provider = "prisma-client-js"
+//   output   = "../src/generated/prisma"
+// }
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../node_modules/.prisma/client"   // atau "./generated/client"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  username String  @id @db.VarChar(100) // menggunakan username sebagai primary key
+  password String  @db.VarChar(100)
+  name     String  @db.VarChar(100)
+  token    String? @db.VarChar(100)  // boleh null, untuk menyimpan token sesi
+
+  contacts Contact[] // relasi ke Contact, satu User bisa memiliki banyak Contact
+
+  @@map("users") 
+}
+
+model Contact {
+  id         Int     @id @default(autoincrement()) // menggunakan id sebagai primary key dengan auto increment
+  first_name String  @db.VarChar(100)
+  last_name  String? @db.VarChar(100)
+  email      String? @db.VarChar(100)
+  phone      String? @db.VarChar(20)
+  
+  username   String  @db.VarChar(100)
+
+  user      User      @relation(fields: [username], references: [username]) // relasi ke User menggunakan username sebagai foreign key
+  addresses Address[] // relasi ke Address, satu Contact bisa memiliki banyak Address
+
+  @@map("contacts")
+}
+
+model Address {
+  id          Int     @id @default(autoincrement()) 
+  street      String? @db.VarChar(255)
+  city        String? @db.VarChar(100)
+  province    String? @db.VarChar(100)
+  country     String  @db.VarChar(100)
+  postal_code String  @db.VarChar(10)
+  contact_id  Int
+
+  contact Contact @relation(fields: [contact_id], references: [id]) // relasi ke Contact menggunakan contact_id sebagai foreign key
+
+  @@map("addresses")
+}

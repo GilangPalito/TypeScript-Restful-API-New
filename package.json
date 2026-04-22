@@ -1,0 +1,45 @@
+{
+  "name": "belajar-typescript-restful-api",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "Gilang Palito",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest --runInBand",
+    "postinstall": "prisma generate",
+    "build": "tsc && prisma generate",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.5.0",
+    "@prisma/client": "^7.6.0",
+    "@prisma/client-runtime-utils": "^7.6.0",
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "pg": "^8.20.0",
+    "uuid": "^13.0.0",
+    "winston": "^3.19.0",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@babel/preset-env": "^7.29.2",
+    "@babel/preset-typescript": "^7.28.5",
+    "@jest/globals": "^30.3.0",
+    "@types/bcrypt": "^6.0.0",
+    "@types/express": "^5.0.6",
+    "@types/jest": "^30.0.0",
+    "@types/mocha": "^10.0.10",
+    "@types/pg": "^8.20.0",
+    "@types/supertest": "^7.2.0",
+    "@types/uuid": "^11.0.0",
+    "babel-jest": "^30.3.0",
+    "dotenv": "^17.3.1",
+    "jest": "^30.3.0",
+    "prisma": "^7.6.0",
+    "supertest": "^7.2.2",
+    "ts-jest": "^29.4.9",
+    "typescript": "^6.0.2"
+  }
+}

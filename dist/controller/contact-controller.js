@@ -1,0 +1,132 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ContactController = void 0;
+const contact_service_1 = require("../service/contact-service");
+const logging_1 = require("../application/logging");
+const response_error_1 = require("../error/response-error");
+class ContactController {
+    // CREATE CONTACT
+    //------------------------------------------------
+    static create(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const request = req.body;
+                const response = yield contact_service_1.ContactService.create(req.user, request);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    // GET CONTACT
+    //------------------------------------------------
+    // static async get(req: UserRequest, res: Response, next: NextFunction) {
+    //     try {
+    //         const contactId = Number(req.params.contactId);
+    //         const response = await ContactService.get(req.user!, contactId);
+    //         logger.debug("response : " + JSON.stringify(response));
+    //         res.status(200).json({
+    //             data: response
+    //         });
+    //     } catch (e) {
+    //         next(e);
+    //     }
+    // }
+    static get(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const contactIdStr = req.params.contactId;
+                // Perbaikan: pastikan bertipe string dan bukan array
+                if (Array.isArray(contactIdStr)) { // Jika contactIdStr adalah array, maka ini adalah input yang tidak valid
+                    throw new response_error_1.ResponseError(400, "Invalid contactId");
+                }
+                // Validasi tambahan untuk memastikan hanya angka yang diterima
+                if (typeof contactIdStr !== "string" || !/^\d+$/.test(contactIdStr)) {
+                    throw new response_error_1.ResponseError(400, "Invalid contactId. Harus berupa angka positif.");
+                }
+                const contactId = Number(contactIdStr);
+                if (isNaN(contactId) || contactId <= 0) {
+                    throw new response_error_1.ResponseError(400, "Invalid contactId");
+                }
+                const response = yield contact_service_1.ContactService.get(req.user, contactId);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    // UPDATE CONTACT
+    //------------------------------------------------
+    static update(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const request = req.body;
+                request.id = Number(req.params.contactId); // Pastikan id diubah menjadi number 
+                const response = yield contact_service_1.ContactService.update(req.user, request);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json({
+                    data: response
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    // REMOVE CONTACT
+    //------------------------------------------------
+    static remove(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const contactId = Number(req.params.contactId); // Pastikan id diubah menjadi number 
+                const response = yield contact_service_1.ContactService.delete(req.user, contactId);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json({
+                    data: "OK"
+                });
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+    // SEARCH CONTACT
+    //------------------------------------------------
+    static search(req, res, next) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const request = {
+                    name: req.query.name,
+                    email: req.query.email,
+                    phone: req.query.phone,
+                    page: req.query.page ? Number(req.query.page) : 1,
+                    size: req.query.size ? Number(req.query.size) : 10,
+                };
+                const response = yield contact_service_1.ContactService.search(req.user, request);
+                logging_1.logger.debug("response : " + JSON.stringify(response));
+                res.status(200).json(response);
+            }
+            catch (e) {
+                next(e);
+            }
+        });
+    }
+}
+exports.ContactController = ContactController;

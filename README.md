@@ -7,7 +7,7 @@ TypeScript Restful API
 Create .env file
 
 ```
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/belajar_typescript_restful_api?schema=public"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5433/belajar_typescript_restful_api?schema=public"
 ```
 
 ```shell

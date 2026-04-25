@@ -17,6 +17,7 @@ datasource db {
   provider = "postgresql"
 }
 
+
 model User {
   username String  @id @db.VarChar(100) // menggunakan username sebagai primary key
   password String  @db.VarChar(100)
